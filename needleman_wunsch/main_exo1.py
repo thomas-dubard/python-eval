@@ -1,6 +1,6 @@
 ##Exercice 1
 
-from needleman_wunsch.ruler import Ruler
+from ruler import Ruler
 
 # on crée un objet pour mesurer
 # la distance entre deux chaines
