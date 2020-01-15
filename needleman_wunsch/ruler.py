@@ -41,8 +41,13 @@ class Ruler:
             elif alignB[k] == "=":
                 "".join(alignA_print, alignA[k])
                 "".join(alignB_print, red_text("="))
-            ##
-        return self._alignA, self._alignB
+            elif alignA[k] != alignB[k]:
+                "".join(alignA_print, red_text(alignA[k]))
+                "".join(alignB_print, red_text(alignB[k]))
+            else:
+                "".join(alignA_print, alignA[k])
+                "".join(alignB_print, alignB[k])
+        return alignA_print, alignB_print
 
     @property
     def distance(self):
