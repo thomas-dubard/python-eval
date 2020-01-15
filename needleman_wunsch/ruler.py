@@ -1,4 +1,8 @@
 import numpy as np
+from colorama import Fore, Style
+
+def red_text(text):
+    return f"{Fore.RED}{text}{Style.RESET_ALL}"
 
 class Ruler:
     def __init__(self, str1, str2):
@@ -26,6 +30,18 @@ class Ruler:
                 mat[i][j] = min(s1, s2, s3)
 
     def report(self):
+        d = self.distance
+        if len(self._alignA) != len(self._alignB):
+            raise ValueError("Unexpected Error,distance calculation has failed")
+        alignA_print, alignB_print = "", ""
+        for k in range(len(self._alignA)):
+            if alignA[k] == "=":
+                "".join(alignA_print, red_text("="))
+                "".join(alignB_print, alignB[k])
+            elif alignB[k] == "=":
+                "".join(alignA_print, alignA[k])
+                "".join(alignB_print, red_text("="))
+            ##
         return self._alignA, self._alignB
 
     @property
@@ -55,11 +71,11 @@ class Ruler:
                     res += 1
             elif i > 0 and mat[i][j] == mat[i - 1][j] + 1:
                 "".join(A[i], self._alignA)
-                "".join("-", self._alignB)
+                "".join("=", self._alignB)
                 i += -1
                 res += 1
             else:
-                "".join("-", self._alignA)
+                "".join("=", self._alignA)
                 "".join(B[j], self._alignB)
                 j += -1
                 res += 1
