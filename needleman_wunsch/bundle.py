@@ -6,19 +6,15 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("dataset", help="Couples de fragments", type=list)
+parser.add_argument("dataset", help="Couples de fragments")
 
 args = parser.parse_args()
 
-swap = args.dataset
-n = len(swap)
-
-if n%2 == 1:
-    raise TypeError("Il faut des couples de fragments")
+texte = args.dataset
 
 liste = []
-for k in range(n//2):
-    liste.append(tuple(swap[2 * k], swap[2 * k + 1]))
+for ligne in texte:
+
 
 for k in range(n//2):
     ruler = Ruler(*liste[k])
