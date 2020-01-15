@@ -6,28 +6,30 @@ def red_text(text):
 
 class Ruler:
     def __init__(self, str1, str2):
-        self.distance = None
         self._alignA = ""
         self._alignB = ""
+        self.A = str1
+        self.B = str2
+        self.distance = 0
+        #construction de la matrice
+        nb_col = len(self.B)
+        nb_ligne = len(self.A)
+        self.mat = np.array([[0]*(nb_col+1)]*(nb_ligne+1))
 
     def compute(self):
-
-        #construction de la matrice
-        swap = [0 for _ in range(len(str2 + 1))]
-        mat = np.array([swap for _ in range(len(str1 + 1))])
-
        #remplissage de la matrice
-        mat[0][:] = [k for k in range(len(str2 + 1))]
-        mat[:][0] = [k for k in range(len(str1 + 1))]
-        for i in range(1, len(str1 + 1)):
-            for j in range(1, len(str2 + 1)):
-                if str1[j] == str2[i]:
-                    s1 = mat[i - 1][j - 1] - 1
+        self.mat[0][:] = range(nb_col + 1)
+        self.mat.T[0][:] = [k for k in range(nb_ligne + 1)]
+        self.mat.T
+        for i in range(1, nb_ligne):
+            for j in range(1, nb_col):
+                if self.A[i] == self.B[j]:
+                    s1 = self.mat[i - 1][j - 1] - 1
                 else:
-                    s1 = mat[i - 1][j - 1] + 1
-                s2 = mat[i][j - 1] + 1
-                s3 = mat[i - 1][j] + 1
-                mat[i][j] = min(s1, s2, s3)
+                    s1 = self.mat[i - 1][j - 1] + 1
+                s2 = self.mat[i][j - 1] + 1
+                s3 = self.mat[i - 1][j] + 1
+                self.mat[i][j] = min(s1, s2, s3)
 
     def report(self):
         d = self.distance
@@ -54,34 +56,32 @@ class Ruler:
         return self._distance
 
     @distance.setter
-    def distance():
+    def distance(self, mat):
         res = 0
         def S(A, B):
             if A == B:
                 return -1
             else:
                 return 1
-        A = str1
-        B = str2
-        i = len(str1)
-        j = len(str2)
+        i = len(self.A)
+        j = len(self.B)
         while i > 0 or j > 0:
             pos = (i > 0 and j > 0)
-            if pos and mat[i][j] == mat[i - 1][j - 1] + S(A[i], B[j]):
-                "".join(A[i], self._alignA)
-                "".join(B[j], self._alignB)
+            if pos and self.mat[i][j] == self.mat[i - 1][j - 1] + S(self.A[i], self.B[j]):
+                "".join(self.A[i], self._alignA)
+                "".join(self.B[j], self._alignB)
                 i += -1
                 j += -1
-                if A[i] != B[j]:
+                if self.A[i] != self.B[j]:
                     res += 1
-            elif i > 0 and mat[i][j] == mat[i - 1][j] + 1:
-                "".join(A[i], self._alignA)
+            elif i > 0 and self.mat[i][j] == self.mat[i - 1][j] + 1:
+                "".join(self.A[i], self._alignA)
                 "".join("=", self._alignB)
                 i += -1
                 res += 1
             else:
                 "".join("=", self._alignA)
-                "".join(B[j], self._alignB)
+                "".join(self.B[j], self._alignB)
                 j += -1
                 res += 1
         self._distance = res
