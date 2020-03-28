@@ -30,6 +30,7 @@ class Ruler:
                 s2 = self.mat[i][j - 1] + 1
                 s3 = self.mat[i - 1][j] + 1
                 self.mat[i][j] = min(s1, s2, s3)
+        print("ok")
 
     def report(self):
         d = self.distance
@@ -56,7 +57,7 @@ class Ruler:
         return self._distance
 
     @distance.setter
-    def distance(self, mat):
+    def distance(self, matrix):
         res = 0
         def S(A, B):
             if A == B:
