@@ -1,9 +1,5 @@
 import argparse
 
-# que l'on peut utiliser comme ceci
-#message = "def"
-#print(f"abc{red_text(message)}ghi")
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument("dataset", help="Couples de fragments", type=str)
@@ -20,7 +16,7 @@ with open(texte, 'r') as fichier:
             if len(swap) == 0:
                 swap.append(ligne)
             else:
-                liste.append(swap[0], ligne)
+                liste.append(tuple(swap[0], ligne))
                 swap = []
 
 for k in range(n//2):

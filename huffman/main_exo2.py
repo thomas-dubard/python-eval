@@ -12,6 +12,7 @@ binary_tree = builder.tree()
 codec = Codec(binary_tree)
 # qui permet d'encoder
 encoded = codec.encode(text)
+print(f"encoded={encoded}")
 # et de décoder
 decoded = codec.decode(encoded)
 # si cette assertion est fausse il y a un gros problème avec le code
