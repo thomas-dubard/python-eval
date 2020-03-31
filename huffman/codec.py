@@ -11,7 +11,7 @@ class Codec:
         self.dico = None
         self.rev_dico = None
 
-    def encode(self, text):
+    def encode(self, text: str) -> str:
         """
         On fusionne les codages de toutes les lettres du texte.
         On prendra ce long chiffre en chaîne de caractères.
@@ -19,7 +19,7 @@ class Codec:
         """
         return "".join(self.dico[x] for x in text)
 
-    def decode(self, encoded):
+    def decode(self, encoded: str) -> str:
         """
         On profite du dictionnaire de décodage rev_dico.
         On stocke ce que l'on voit au fur et à mesure.
@@ -30,16 +30,12 @@ class Codec:
         """
         queue = ""
         res = []
-        print(self.dico)
-        print(self.rev_dico)
         for x in encoded:
             if queue in self.rev_dico:
                 res.append(self.rev_dico[queue])
-                print(queue)
                 queue = x
             else:
                 queue = queue + x
-        print(queue)
         res.append(self.rev_dico[queue])
         return "".join(x for x in res)
 
@@ -70,9 +66,7 @@ class Codec:
                 elif isinstance(x, list):
                     swap.append(x)
             current = swap[:]
-            print(current)
             check = sum(isinstance(x, tuple) for x in current)
-            print(check)
 
         # La suite vise à éjecter toutes les erreurs de type de l'arbre.
         # c'est-à-dire les chaînes de caractère vide, ...
@@ -141,7 +135,6 @@ class TreeBuilder:
                 k += 1
             self.HDD[i], self.HDD[record] = self.HDD[record], self.HDD[i]
             i += 1
-        print(f"HDD={self.HDD}")
 
 
     def tree(self):
@@ -150,7 +143,7 @@ class TreeBuilder:
         On va ensuite constituer un arbre avec ces noeuds.
         """
         BinaryNode = namedtuple('BinaryNode', ['g0', 'd1', 'id'])
-        def Binary(text, nb, id):
+        def Binary(text: str, nb: int, id: str) -> BinaryNode:
             """
             On va constituer l'arbre binaire par récursivité.
             Au-dessus on a défini le namedtuple BinaryNode.
@@ -165,7 +158,6 @@ class TreeBuilder:
             """
             # Cas de base
             if len(text) == 1: #juste un caractère et son nombre d'occurences
-                print(f"tip, {[text, nb, id]}")
                 return [text, nb, id]
             if len(text) == 0: #rien mais on le met quand même
                 return ["", 0, None]
@@ -203,5 +195,4 @@ class TreeBuilder:
 
         texte = "".join(x[0] for x in self.HDD)
         nombre = sum(self.occur[x] for x in self.stock)
-        print(f"texte = {texte}, nombre = {nombre}")
         return Binary(texte, nombre, "")
