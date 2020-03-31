@@ -60,66 +60,33 @@ class Codec:
         sachant qu'au bout des branches il y a des listes à deux éléments.
         Si on est sur un namedTuple, c'est que l'on peut s'enfoncer.
         """
-        current = [[self.tree, ""]]
-        check = sum(isinstance(x[0], tuple) for x in current)
+        current = [self.tree]
+        check = sum(isinstance(x, tuple) for x in current)
         while check > 0:
-            # On continue tant qu'on a pas fini toutes les branches de tree
             swap = []
             for x in current:
-                if isinstance(x[0], tuple):
-                    swap.extend([[x[0][0], f"0{x[1]}"], [x[0][1], f"1{x[1]}"]])
-                elif isinstance(x[0], list):
+                if isinstance(x, tuple):
+                    swap.extend([x[0], x[1]])
+                elif isinstance(x, list):
                     swap.append(x)
             current = swap[:]
-            check = sum(isinstance(x[0], tuple) for x in current)
+            print(current)
+            check = sum(isinstance(x, tuple) for x in current)
+            print(check)
 
         # La suite vise à éjecter toutes les erreurs de type de l'arbre.
-        # Théoriquement il n'y en a pas, mais c'est une sécurité.
+        # c'est-à-dire les chaînes de caractère vide, ...
         error = []
         for k in range(len(current)):
-            if not isinstance(current[k], list):
+            if not isinstance(current[k], list) and current[k][2] != None:
                 error.append(k)
         for k in error[::-1]:
             current.pop(k)
 
+        # A chaque caractère on associe son codage binaire.
         result = dict()
         for x in current:
-            result[x[0][0]] = x[1]
-            # A chaque caractère on associe son codage binaire.
-
-        # La suite vise à éjecter les None ou chaînes vides produites par tree.
-        if None in result:
-            result.pop(None)
-        if "" in result:
-            result.pop("")
-
-        # Comme il y a des recouvrements ...
-        # On va devoir les corriger manuellement ...
-        for k in range(len(self.tree.HDD)):
-            xk = self.tree.HDD[k][0]
-            nk = len(result[xk])
-            for i in range(len(self.tree.HDD)):
-                xi = self.tree.HDD[i][0]
-                ni = len(result[xi])
-                if i!= k and nk <= ni and xk == xi[:nk]:
-                    # Alors il y a recouvrement.
-                    # D'expérience ils ne sont qu'à une lettre près ...
-                    # On va espérer que c'est toujours le cas ...
-                    if xi[nk] == "0":
-                        xk += "1"
-                    else:
-                        xk += "0"
-
-        # Au cas où on vérifie que ça a été efficace ...
-        for k in range(len(self.tree.HDD)):
-            xk = self.tree.HDD[k][0]
-            nk = len(result[xk])
-            for i in range(len(self.tree.HDD)):
-                xi = self.tree.HDD[i][0]
-                ni = len(result[xi])
-                if i!= k and nk <= ni and xk == xi[:nk]:
-                    raise ValueError("Echec critique: il reste des erreurs !")
-
+            result[x[0]] = x[2]
         self._dico = result
 
     @rev_dico.setter
@@ -198,6 +165,7 @@ class TreeBuilder:
             """
             # Cas de base
             if len(text) == 1: #juste un caractère et son nombre d'occurences
+                print(f"tip, {[text, nb, id]}")
                 return [text, nb, id]
             if len(text) == 0: #rien mais on le met quand même
                 return ["", 0, None]
@@ -206,9 +174,13 @@ class TreeBuilder:
                 # et évite des erreurs sur les partages médians à deux éléments
                 text1 = text[0]
                 nb1 = self.occur[text1]
+                id1 = id + "0"
                 text2 = text[1]
                 nb2 = self.occur[text2]
-                return BinaryNode(Binary(text1, nb1), Binary(text2, nb2))
+                id2 = id + "1"
+                gauche = Binary(text1, nb1, id1)
+                droite = Binary(text2, nb2, id2)
+                return BinaryNode(gauche, droite, id)
 
             # Cas général
             queue = []
@@ -221,11 +193,15 @@ class TreeBuilder:
             n = len(queue)
             text1 = "".join(x for x in queue)
             nb1 = sum(self.occur[x] for x in text1)
+            id1 = id + "0"
             text2 = "".join(x for x in text[n:])
             nb2 = sum(self.occur[x] for x in text2)
-            return BinaryNode(Binary(text1, nb1), Binary(text2, nb2))
+            id2 = id + "1"
+            gauche = Binary(text1, nb1, id1)
+            droite = Binary(text2, nb2, id2)
+            return BinaryNode(gauche, droite, id)
 
         texte = "".join(x[0] for x in self.HDD)
         nombre = sum(self.occur[x] for x in self.stock)
         print(f"texte = {texte}, nombre = {nombre}")
-        return Binary(texte, nombre)
+        return Binary(texte, nombre, "")
