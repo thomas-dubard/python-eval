@@ -55,7 +55,6 @@ class Ruler:
                 s3 = self.mat[i - 1][j] + 1
                 # On identifie la situation dans laquelle on est
                 self.mat[i][j] = min(s1, s2, s3)
-        print(f"mat{self.mat}")
         #Puis on peut alors calculer la distance.
         matrix = np.copy(self.mat)
         res = 0
@@ -78,7 +77,6 @@ class Ruler:
                 if self.A[i] != self.B[j]:
                     # S'ils sont différents, cela augmente la distance
                     res += egalite
-                    print(f"{res}, sub")
             elif i > 0 and matrix[i][j] == matrix[i - 1][j] + 1:
                 # On a un trou à mettre en B
                 self._alignA = f"{self.A[i]}{self._alignA}"
@@ -86,7 +84,6 @@ class Ruler:
                 i += -1
                 res += (trou - egalite)
                 #A chaque fois ces erreurs comptent doubles donc on adapte
-                print(f"{res}, =B")
             else:
                 # On a un trou à mettre en A
                 self._alignA = f"={self._alignA}"
@@ -94,7 +91,6 @@ class Ruler:
                 j += -1
                 res += (trou - egalite)
                 #A chaque fois ces erreurs comptent doubles donc on adapte
-                print(f"{res}, =A")
         self.distance = res
 
     def report(self) -> tuple:
