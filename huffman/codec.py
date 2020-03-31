@@ -182,8 +182,8 @@ class TreeBuilder:
         A partir de la fonction Binary on récupère les noeuds binaires.
         On va ensuite constituer un arbre avec ces noeuds.
         """
-        BinaryNode = namedtuple('BinaryNode', ['g0', 'd1'])
-        def Binary(text, nb):
+        BinaryNode = namedtuple('BinaryNode', ['g0', 'd1', 'id'])
+        def Binary(text, nb, id):
             """
             On va constituer l'arbre binaire par récursivité.
             Au-dessus on a défini le namedtuple BinaryNode.
@@ -191,14 +191,16 @@ class TreeBuilder:
             Il suffit de donner les instructions et de les composer.
             Alors g0 définit un aller à gauche.
             Et d1 un aller à droite.
+            De plus on affecte à chaque noeud un identifiant id.
+            cela va permettre d'aisément faire le codage en binaire.
             En dehors des cas de base, on va chercher à couper le texte en deux.
             Pour optimiser la découpe, on l'aura trié au préalable via HDD.
             """
             # Cas de base
             if len(text) == 1: #juste un caractère et son nombre d'occurences
-                return [text, nb]
+                return [text, nb, id]
             if len(text) == 0: #rien mais on le met quand même
-                return ["", 0]
+                return ["", 0, None]
             if len(text) == 2: #pour s'assurer du bon fonctionnement
                 # et montre la philosophie du codage de l'arbre ici
                 # et évite des erreurs sur les partages médians à deux éléments

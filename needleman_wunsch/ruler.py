@@ -17,8 +17,9 @@ class Ruler:
     def __init__(self, str1, str2):
         self._alignA = ""
         self._alignB = ""
-        self.A = str1
-        self.B = str2
+        self.A = " " + str1
+        self.B = " " + str2
+        # Oui je triche car sinon le premier caractère est ignoré...
 
         #Initialisation des properties
         nb_col = len(self.B)
