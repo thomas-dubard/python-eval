@@ -16,10 +16,10 @@ with open(texte, 'r') as fichier:
             if len(swap) == 0:
                 swap.append(ligne)
             else:
-                liste.append(tuple(swap[0], ligne))
+                liste.append((swap[0], ligne))
                 swap = []
 
-for k in range(n//2):
+for k in range(len(liste)):
     ruler = Ruler(*liste[k])
     ruler.compute()
     d = ruler.distance

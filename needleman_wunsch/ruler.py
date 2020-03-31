@@ -1,10 +1,11 @@
 import numpy as np
-from colorama import Fore, Style
+from colorama import init, Fore, Style
 
 def red_text(text):
     """
     On utilise cette fonction pour proprement inclure du texte en rouge.
     """
+    init(convert=True) # nécessaire sous des OS propriétaires :p
     return f"{Fore.RED}{text}{Style.RESET_ALL}"
 
 class Ruler:
@@ -23,7 +24,7 @@ class Ruler:
         nb_col = len(self.B)
         nb_ligne = len(self.A)
         self._mat = np.array([[0]*(nb_col+1)]*(nb_ligne+1))
-        self._distance = self._mat
+        self.distance = None
 
     def compute(self):
         """
@@ -49,41 +50,8 @@ class Ruler:
                 # On identifie la situation dans laquelle on est
                 self.mat[i][j] = min(s1, s2, s3)
 
-    def report(self):
-        """
-        Cette fonction vise à donner un compte-rendu de la comparaison
-        Par la fonction red_text on met en évidence les différences.
-        """
-        d = self.distance
-        if len(self._alignA) != len(self._alignB):
-            raise ValueError("Unexpected Error,distance calculation has failed")
-        alignA_print, alignB_print = "", ""
-        for k in range(len(self._alignA)):
-            # On réécrit en mettant en valeur les changements
-            if self._alignA[k] == "=":
-                alignA_print += red_text("=")
-                alignB_print += self._alignB[k]
-            elif alignB[k] == "=":
-                alignA_print += self._alignA[k]
-                alignB_print += red_text("=")
-            elif alignA[k] != alignB[k]:
-                alignA_print += red_text(self._alignA[k])
-                alignB_print += red_text(self._alignB[k])
-            else:
-                alignA_print += self._alignA[k]
-                alignB_print += self._alignB[k]
-        return alignA_print, alignB_print
-
-    @property
-    def distance(self):
-        return self._distance
-
-    @distance.setter
-    def distance(self, matrix):
-        """
-        Cette property va calculer la distance à partir de self.mat
-        La fonction S donne un score en fonction des égalités
-        """
+        #Puis on peut alors calculer la distance.
+        matrix = np.copy(self.mat)
         print(f"matrix={matrix}, m0={matrix[0]}")
         res = 0
         def S(A, B):
@@ -118,7 +86,32 @@ class Ruler:
                 self._alignB = f"{self.B[j]}{self._alignB}"
                 j += -1
                 res += 1
-        self._distance = res
+        self.distance = res
+
+    def report(self):
+        """
+        Cette fonction vise à donner un compte-rendu de la comparaison
+        Par la fonction red_text on met en évidence les différences.
+        """
+        d = self.distance
+        if len(self._alignA) != len(self._alignB):
+            raise ValueError("Unexpected Error,distance calculation has failed")
+        alignA_print, alignB_print = "", ""
+        for k in range(len(self._alignA)):
+            # On réécrit en mettant en valeur les changements
+            if self._alignA[k] == "=":
+                alignA_print += red_text("=")
+                alignB_print += self._alignB[k]
+            elif self._alignB[k] == "=":
+                alignA_print += self._alignA[k]
+                alignB_print += red_text("=")
+            elif self._alignA[k] != self._alignB[k]:
+                alignA_print += red_text(self._alignA[k])
+                alignB_print += red_text(self._alignB[k])
+            else:
+                alignA_print += self._alignA[k]
+                alignB_print += self._alignB[k]
+        return alignA_print, alignB_print
 
     @property
     def mat(self):

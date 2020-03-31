@@ -207,6 +207,7 @@ class TreeBuilder:
                 text2 = text[1]
                 nb2 = self.occur[text2]
                 return BinaryNode(Binary(text1, nb1), Binary(text2, nb2))
+
             # Cas général
             queue = []
             k, cpt = 0, 0
